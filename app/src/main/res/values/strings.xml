@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MyTrainingSession</string>
+    <string name="training">Тренировка</string>
+    <string name="begin">Начало тренировки</string>
+    <string name="exercise">Упражнение</string>
+    <string name="timeToEnd">Оставшееся время</string>
+    <string name="goNext">Продолжить дальше</string>
+    <string name="exit">Выход</string>
+    <string name="inputExercise">Введите упражнение</string>
+    <string name="goNextPage">Переход к тренировке</string>
+</resources>
