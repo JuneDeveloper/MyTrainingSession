@@ -1,6 +1,7 @@
 package com.example.mytrainingsession
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.Menu
@@ -9,11 +10,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
 class MainActivity2 : AppCompatActivity() {
 
@@ -27,11 +25,10 @@ class MainActivity2 : AppCompatActivity() {
     private lateinit var timerTV: TextView
 
     private lateinit var startButtonBTN: Button
-    private lateinit var completedButtonBTN: Button
+    private lateinit var backButtonBTN: Button
 
     private lateinit var imageViewIV: ImageView
 
-    private var exerciseIndex = 0
     private lateinit var currentExercise: Exercise
     private lateinit var timer: CountDownTimer
 
@@ -43,30 +40,34 @@ class MainActivity2 : AppCompatActivity() {
         toolbarTB = findViewById(R.id.toolbarTB)
         setSupportActionBar(toolbarTB)
 
-        titleTW = findViewById(R.id.titleTW)
-        exerciseTV = findViewById(R.id.exerciseTV)
-        descriptionTV = findViewById(R.id.descriptionTV)
-        startButtonBTN = findViewById(R.id.startButtonBTN)
-        completedButtonBTN = findViewById(R.id.completedButtonBTN)
-        timerTV = findViewById(R.id.timerTV)
-        imageViewIV = findViewById(R.id.imageViewIV)
+        init()
 
         startButtonBTN.setOnClickListener {
             startWorkout()
         }
-        completedButtonBTN.setOnClickListener {
+        backButtonBTN.setOnClickListener {
             completedExercise()
         }
     }
 
+    private fun init() {
+        titleTW = findViewById(R.id.titleTW)
+        exerciseTV = findViewById(R.id.exerciseTV)
+        descriptionTV = findViewById(R.id.descriptionTV)
+        startButtonBTN = findViewById(R.id.startButtonBTN)
+        backButtonBTN = findViewById(R.id.backButtonBTN)
+        timerTV = findViewById(R.id.timerTV)
+        imageViewIV = findViewById(R.id.imageViewIV)
+    }
+
     private fun completedExercise() {
         timer.cancel()
-        completedButtonBTN.isEnabled = false
-        startNextExercise()
+        val intent = Intent(this,MainActivity3::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun startWorkout() {
-        exerciseIndex = 0
         titleTW.text = "Начало тренировки"
         startButtonBTN.isEnabled = false
         startButtonBTN.text = "Процесс тренировки"
@@ -74,11 +75,11 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     private fun startNextExercise() {
-        if(exerciseIndex < exercises.size) {
-            currentExercise = exercises[exerciseIndex]
+        val x = intent.extras?.getInt("position")
+            currentExercise = exercises[x?:0]
             exerciseTV.text = currentExercise.name
             descriptionTV.text = currentExercise.description
-            imageViewIV.setImageResource(exercises[exerciseIndex].gifImage)
+            imageViewIV.setImageResource(exercises[x?:0].gifImage)
             timerTV.text = formatTime(currentExercise.durationInSeconds)
             timer = object : CountDownTimer(
                 currentExercise.durationInSeconds * 1000L,
@@ -91,19 +92,13 @@ class MainActivity2 : AppCompatActivity() {
                 override fun onFinish() {
                     timerTV.text = "Упражнение завершено"
                     imageViewIV.visibility = View.VISIBLE
-                    completedButtonBTN.isEnabled = true
+                    backButtonBTN.isEnabled = true
+                    descriptionTV.text = ""
                     imageViewIV.setImageResource(0)
+                    startButtonBTN.setText("Повторить")
+                    startButtonBTN.isEnabled = true
                 }
             }.start()
-            exerciseIndex++
-        }else{
-            exerciseTV.text = "Тренировка завершена"
-            descriptionTV.text = ""
-            timerTV.text = ""
-            completedButtonBTN.isEnabled = false
-            startButtonBTN.isEnabled = true
-            startButtonBTN.text = "Начать снова"
-        }
     }
 
     @SuppressLint("DefaultLocale")

@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         startImageIV.setImageResource(R.drawable.ixbtmedia)
         startTextTV.setText("Будь в форме круглый год,\n а не только летом!:)")
         startButtonBTN.setOnClickListener {
-            val intent = Intent(this,MainActivity2::class.java)
+            val intent = Intent(this,MainActivity3::class.java)
             startActivity(intent)
         }
     }
